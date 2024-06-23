@@ -1,4 +1,6 @@
-import * as React from 'react';
+'use client'
+
+import React, { useContext } from 'react';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -9,7 +11,17 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
-export default function CardProduct({ image, title, description, price }) {
+import CartContext from '../_context/cartContext'; // Correct the context name
+
+export default function CardProduct({ image, title, description, price, id }) {
+    const { addItemToCart } = useContext(CartContext); // Use the correct context name
+
+    const addToCartHandler = () => {
+        addItemToCart({
+            id
+        });
+    };
+
     return (
         <Card variant="outlined" sx={{ maxWidth: 360 }}>
             <CardMedia
@@ -47,7 +59,7 @@ export default function CardProduct({ image, title, description, price }) {
                     />
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                    <IconButton color="primary" aria-label="add to shopping cart">
+                    <IconButton color="primary" aria-label="add to shopping cart" onClick={addToCartHandler}>
                         <AddShoppingCartIcon />
                     </IconButton>
                 </Box>

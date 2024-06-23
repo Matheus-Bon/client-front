@@ -1,3 +1,4 @@
+import CardProduct from "../_components/cardProduct";
 import OrderCode from "../_components/orderCode";
 import TotalPrice from "../_components/totalPrice";
 import Box from '@mui/material/Box';
@@ -21,10 +22,28 @@ const getOrderData = async (orderId) => {
 }
 
 
-export default async function OrderingDetails({ params }) {
+export default async function Ordering({ params }) {
 
     const orderId = params.orderId;
     // const data = await getOrderData(orderId);
+
+    const products = [
+        {
+            image: 'https://via.placeholder.com/140',
+            title: 'Product 1',
+            description: 'Description for product 1',
+            price: 100,
+            _id: '123'
+        },
+        {
+            image: 'https://via.placeholder.com/140',
+            title: 'Product 2',
+            description: 'Description for product 2',
+            price: 200,
+            _id: '1234'
+        },
+        // Adicione mais produtos conforme necessário
+    ];
 
 
     return (
@@ -33,11 +52,20 @@ export default async function OrderingDetails({ params }) {
                 <OrderCode orderCode={'2020'} />
             </Box>
 
-            <Box className="flex-1 my-20">
-                <p>Order Id: {params.orderId}</p>
+            <Box className="flex flex-col gap-5 mt-20 mb-28 mx-5">
+                {products.map((product, index) => (
+                    <CardProduct
+                        key={index}
+                        image={product.image}
+                        title={product.title}
+                        description={product.description}
+                        price={product.price}
+                        id={product._id}
+                    />
+                ))}
             </Box>
 
-            <Box className="fixed bottom-0 w-full bg-black z-50">
+            <Box className="fixed bottom-0 w-full bg-black z-50 mt-10">
                 <TotalPrice totalPrice={'20,00'} />
             </Box>
         </Box>
