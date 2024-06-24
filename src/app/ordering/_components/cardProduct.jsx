@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -10,16 +10,22 @@ import CardMedia from '@mui/material/CardMedia';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { useCart } from '@mrvautin/react-shoppingcart';
 
-import CartContext from '../_context/cartContext'; // Correct the context name
 
 export default function CardProduct({ image, title, description, price, id }) {
-    const { addItemToCart } = useContext(CartContext); // Use the correct context name
+    const { addItem } = useCart()
+    const [quantity, setQuantity] = useState(1);
 
-    const addToCartHandler = () => {
-        addItemToCart({
-            id
-        });
+    const handleAddToCart = () => {
+        const product = {
+            id,
+            title,
+            description,
+            image,
+            price
+        };
+        addItem(product, quantity);
     };
 
     return (
@@ -53,13 +59,14 @@ export default function CardProduct({ image, title, description, price, id }) {
                         InputLabelProps={{
                             shrink: true,
                         }}
-                        inputProps={{ min: 0 }}
-                        defaultValue={0}
+                        inputProps={{ min: 1 }}
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
                         sx={{ width: '100px' }}
                     />
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                    <IconButton color="primary" aria-label="add to shopping cart" onClick={addToCartHandler}>
+                    <IconButton color="primary" aria-label="add to shopping cart" onClick={handleAddToCart}>
                         <AddShoppingCartIcon />
                     </IconButton>
                 </Box>

@@ -1,8 +1,13 @@
-import { CartProvider } from "./ordering/_context/cartContext";
+'use client'
+
+import { CartProvider } from '@mrvautin/react-shoppingcart';
 
 export function GlobalProvider({ children }) {
     return (
-        <CartProvider>
+        <CartProvider
+            locale={'pt-BR'}
+            currency={'BRL'}
+        >
             {children}
         </CartProvider>
     )

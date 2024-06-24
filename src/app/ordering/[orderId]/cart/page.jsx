@@ -1,10 +1,19 @@
+'use client'
+
 import Box from '@mui/material/Box';
 import OrderCode from '@/app/ordering/_components/orderCode'
 import CartItem from '../../_components/cartItem';
 import Button from '@mui/material/Button';
+import { useContext } from 'react';
+import CartContext from '../../../../_provider/CartProvider';
 
 
 export default function Cart() {
+
+    const { addItemToCart, cart } = useContext(CartContext);
+
+    // const increaseQty = (cartItem)
+
     return (
         <Box className="flex flex-col min-h-screen">
             <Box className="fixed top-0 w-full bg-white z-50">
@@ -17,7 +26,20 @@ export default function Cart() {
                     </h2>
                 </div>
 
-
+                {cart?.cartItems?.length > 0 && (
+                    <div className='flex flex-col'>
+                        {cart?.cartItems?.map((cartItem, i) => {
+                            <CartItem
+                                key={i}
+                                image={cartItem.image}
+                                title={cartItem.title}
+                                description={cartItem.description}
+                                price={cartItem.price}
+                                id={cartItem.id}
+                            />
+                        })}
+                    </div>
+                )}
             </Box>
             <Box className="flex flex-row justify-between fixed bottom-0 w-full z-50 mt-10 bg-slate-100">
                 <div className='my-2 ml-3'>

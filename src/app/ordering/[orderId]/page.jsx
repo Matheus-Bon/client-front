@@ -49,7 +49,10 @@ export default async function Ordering({ params }) {
     return (
         <Box className="flex flex-col min-h-screen">
             <Box className="fixed top-0 w-full bg-white z-50">
-                <OrderCode orderCode={'2020'} />
+                <OrderCode
+                    orderCode={'2020'}
+                    orderId={params.orderId}
+                />
             </Box>
 
             <Box className="flex flex-col gap-5 mt-20 mb-28 mx-5">
