@@ -7,26 +7,21 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useRouter } from 'next/navigation'
+import Link from 'next/link';
 
-export default function NavBar({ orderCode, orderId }) {
-    const router = useRouter();
-
-    const goToCart = () => {
-        const path = `/ordering/${orderId}/cart`;
-        router.push(path);
-    }
-
+//  TROCAR POR <LINK>
+export default function OrderCode({ orderCode }) {
+    
     return (
-        <Box>
+        <Box className='mb-10'>
             <AppBar position='fixed'>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Pedido {orderCode}
                     </Typography>
-                    <Button color="inherit" onClick={goToCart}>
+                    <Link href={`/ordering/cart`} color="inherit">
                         <ShoppingCartIcon />
-                    </Button>
+                    </Link>
                 </Toolbar>
             </AppBar>
         </Box>

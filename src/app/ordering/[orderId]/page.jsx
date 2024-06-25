@@ -1,7 +1,10 @@
-import CardProduct from "../_components/cardProduct";
-import OrderCode from "../_components/orderCode";
+'use client'
+
+import CardProduct from "../_components/ProductCard";
+import OrderCode from "../_components/OrderCode";
 import TotalPrice from "../_components/totalPrice";
 import Box from '@mui/material/Box';
+import setDataLocalStorage from "@/utils/setDataLocalStorage";
 
 
 const getOrderData = async (orderId) => {
@@ -21,56 +24,91 @@ const getOrderData = async (orderId) => {
     return data;
 }
 
-
-export default async function Ordering({ params }) {
+export default function Ordering({ params }) {
 
     const orderId = params.orderId;
     // const data = await getOrderData(orderId);
 
+    //setDataLocalStorage('orderId', params.orderId);
+
     const products = [
         {
-            image: 'https://via.placeholder.com/140',
-            title: 'Product 1',
-            description: 'Description for product 1',
-            price: 100,
-            _id: '123'
+            category: 'Salgados',
+            items: [
+                {
+                    image: 'https://via.placeholder.com/140',
+                    title: 'Product 1',
+                    description: 'Description for product 1',
+                    price: 100,
+                    _id: '1234'
+                },
+                {
+                    image: 'https://via.placeholder.com/140',
+                    title: 'Product 2',
+                    description: 'Description for product 1',
+                    price: 200,
+                    _id: '12345'
+                },
+                {
+                    image: 'https://via.placeholder.com/140',
+                    title: 'Product 2',
+                    description: 'Description for product 1',
+                    price: 200,
+                    _id: '123456'
+                }
+            ]
         },
         {
-            image: 'https://via.placeholder.com/140',
-            title: 'Product 2',
-            description: 'Description for product 2',
-            price: 200,
-            _id: '1234'
+            category: 'Bebidas',
+            items: [
+                {
+                    image: 'https://via.placeholder.com/140',
+                    title: 'Product 2',
+                    description: 'Description for product 1',
+                    price: 200,
+                    _id: '1237'
+                },
+                {
+                    image: 'https://via.placeholder.com/140',
+                    title: 'Product 2',
+                    description: 'Description for product 1',
+                    price: 200,
+                    _id: '1230'
+                }
+            ]
         },
-        // Adicione mais produtos conforme necessário
     ];
 
 
     return (
-        <Box className="flex flex-col min-h-screen">
-            <Box className="fixed top-0 w-full bg-white z-50">
+        <>
+            <div className="fixed top-0 w-full bg-white z-50">
                 <OrderCode
                     orderCode={'2020'}
                     orderId={params.orderId}
                 />
-            </Box>
+            </div>
 
-            <Box className="flex flex-col gap-5 mt-20 mb-28 mx-5">
-                {products.map((product, index) => (
-                    <CardProduct
-                        key={index}
-                        image={product.image}
-                        title={product.title}
-                        description={product.description}
-                        price={product.price}
-                        id={product._id}
-                    />
+            <div className="flex flex-col gap-5 mt-20 mb-28 mx-5">
+                {products.map((productCategory, index) => (
+                    <div key={index}>
+                        <h3 className="mb-2 font-bold">{productCategory.category}</h3>
+                        <div className="flex flex-col gap-3">
+                            {productCategory.items.map((product, productIndex) => (
+                                <CardProduct
+                                    key={productIndex}
+                                    image={product.image}
+                                    title={product.title}
+                                    description={product.description}
+                                    price={product.price}
+                                    id={product._id}
+                                    orderCode={'2020'}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 ))}
-            </Box>
-
-            <Box className="fixed bottom-0 w-full bg-black z-50 mt-10">
-                <TotalPrice totalPrice={'20,00'} />
-            </Box>
-        </Box>
+            </div>
+        </>
     )
 }
