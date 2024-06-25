@@ -1,46 +1,79 @@
 'use client'
 
 import CardMedia from '@mui/material/CardMedia';
-import OrderCode from '@/app/ordering/_components/OrderCode'
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
+import { useCart } from '@mrvautin/react-shoppingcart';
+
+const product = {
+  name: '100 Salgados',
+  image: 'https://via.placeholder.com/140',
+  description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
+  price: 50,
+  max_items: 100,
+  flavors: [
+    { id: 1, name: 'Quibe', description: 'amo quibe' },
+    { id: 2, name: 'Coxinha', description: '' },
+  ]
+}
+
+// const product = {
+//   name: 'Coca Cola',
+//   image: 'https://via.placeholder.com/140',
+//   description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
+//   price: 12,
+//   max_items: 100,
+//   flavors: []
+// }
 
 export default function Product({ params }) {
   const [selectedFlavors, setSelectedFlavors] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [totalFlavors, setTotalFlavors] = useState(0);
 
   const productId = params.productId;
 
-  // const product = {
-  //   name: '100 Salgados',
-  //   image: 'https://via.placeholder.com/140',
-  //   description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
-  //   price: 50,
-  //   max_items: 100,
-  //   flavors: [
-  //     { id: 1, name: 'Quibe', description: 'amo quibe' },
-  //     { id: 2, name: 'Coxinha', description: '' },
-  //   ]
-  // }
+  const { addItem } = useCart();
 
-  const product = {
-    name: 'Coca Cola',
-    image: 'https://via.placeholder.com/140',
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
-    price: 12,
-    max_items: 100,
-    flavors: []
-  }
+  const handleFlavorChange = (id, value) => {
+    const quantity = parseInt(value);
+    const currentQuantity = selectedFlavors[id] || 0;
+    const newTotalFlavors = totalFlavors - currentQuantity + quantity;
 
+    if (newTotalFlavors <= product.max_items) {
+      setSelectedFlavors((prevFlavors) => ({
+        ...prevFlavors,
+        [id]: quantity,
+      }));
+      setTotalFlavors(newTotalFlavors);
+    }
+  };
 
-  const handleFlavorChange = (id, quantity) => {
-    setSelectedFlavors((prevFlavors) => ({
-      ...prevFlavors,
-      [id]: quantity,
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleAddToCart = () => {
+    const flavors = Object.keys(selectedFlavors).map(id => ({
+      id: parseInt(id),
+      quantity: selectedFlavors[id]
     }));
+
+    addItem({
+      id: productId,
+      name: product.name,
+      price: product.price * quantity,
+      flavors: flavors,
+    }, totalFlavors * quantity);
   };
 
   return (
-    <div className="p-8 font-sans">
+    <div className="p-5 font-sans">
       <CardMedia
         component="img"
         height="140"
@@ -50,7 +83,7 @@ export default function Product({ params }) {
       />
       <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
       <p className="mb-4">{product.description}</p>
-      <p className="mb-8 text-lg font-thin">R$ {product.price}</p>
+      <p className="mb-8 text-lg font-thin">{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
       <h2 className="text-xl font-semibold mb-2">Escolha a quantidade</h2>
       <div>
         {product.flavors && product.flavors.length > 0 ? (
@@ -68,25 +101,35 @@ export default function Product({ params }) {
               />
             </div>
           ))
-        ) : (
-          <TextField
-            id="outlined-number"
-            label="Quantidade"
-            type="number"
-            min="0"
-            max={product.max_items}
-            value={selectedFlavors[0] || 0}
-            onChange={(e) => handleFlavorChange(0, e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            className='w-32 mt-2'
-          />
-        )}
+        ) : (<></>)}
       </div>
-      <button className="mt-4 px-6 py-2 bg-yellow-400 text-white font-semibold rounded hover:bg-yellow-500">
-        Adicionar
-      </button>
+
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={decreaseQuantity}
+          className="w-6 h-6 flex items-center justify-center text-gray-500 border border-gray-300 rounded"
+        >
+          <span className="text-lg leading-none">-</span>
+        </button>
+        <span className="text-lg">{quantity}</span>
+        <button
+          onClick={increaseQuantity}
+          className="w-6 h-6 flex items-center justify-center text-red-500 border border-red-500 rounded"
+        >
+          <span className="text-lg leading-none">+</span>
+        </button>
+        <button
+          onClick={handleAddToCart}
+          className={`flex-1 text-center py-2 px-4 rounded ${totalFlavors === 0 || totalFlavors < product.max_items
+            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            : 'bg-blue-500 text-slate-50'
+            }`}
+          disabled={totalFlavors === 0 || totalFlavors < product.max_items}
+        >
+          Adicionar
+          <span className="ml-2">{(product.price * quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+        </button>
+      </div>
     </div>
   );
 }

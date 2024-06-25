@@ -1,15 +1,6 @@
 'use client'
 
 import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import CardMedia from '@mui/material/CardMedia';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useCart } from '@mrvautin/react-shoppingcart';
 import Link from 'next/link';
 

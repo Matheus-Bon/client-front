@@ -1,11 +1,5 @@
-'use client'
-
 import CardProduct from "../_components/ProductCard";
 import OrderCode from "../_components/OrderCode";
-import TotalPrice from "../_components/totalPrice";
-import Box from '@mui/material/Box';
-import setDataLocalStorage from "@/utils/setDataLocalStorage";
-
 
 const getOrderData = async (orderId) => {
     const res = await fetch('https://api.example.com/...');
@@ -27,10 +21,7 @@ const getOrderData = async (orderId) => {
 export default function Ordering({ params }) {
 
     const orderId = params.orderId;
-    // const data = await getOrderData(orderId);
-
-    //setDataLocalStorage('orderId', params.orderId);
-
+    
     const products = [
         {
             category: 'Salgados',

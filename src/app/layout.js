@@ -1,5 +1,5 @@
 import "./globals.css";
-import { GlobalProvider } from "./GlobalProvider";
+// import { GlobalProvider } from "./ordering/OrderingProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -11,9 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="pt-BR">
 
       <body className='bg-slate-50'>
-        <GlobalProvider>
-          {children}
-        </GlobalProvider>
+        {children}
       </body>
 
     </html>

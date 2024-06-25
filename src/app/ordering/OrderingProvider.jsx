@@ -2,7 +2,7 @@
 
 import { CartProvider } from '@mrvautin/react-shoppingcart';
 
-export function GlobalProvider({ children }) {
+export default function OrderingProvider({ children }) {
     return (
         <CartProvider
             locale={'pt-BR'}
