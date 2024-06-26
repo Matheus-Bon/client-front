@@ -1,54 +1,79 @@
-import Box from '@mui/material/Box';
-import OrderCode from '@/app/ordering/_components/OrderCode'
-import CartItem from '../../_components/cartItem';
-import Button from '@mui/material/Button';
-import { useContext } from 'react';
+'use client'
+
+import formatPrice from "@/utils/formatPrice";
+import { useCart } from "@mrvautin/react-shoppingcart";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 export default function Cart() {
+    // const { items } = useCart();
+    const [items, setItems] = useState([]);
+    const router = useRouter();
+    const { items: itemsData } = useCart();
 
-    // const { addItemToCart, cart } = useContext(CartContext);
+    useEffect(() => {
+        setItems(itemsData);
+    }, [])
 
-    // const increaseQty = (cartItem)
+
+
+    /* const items = [
+        {
+            id: '1',
+            name: 'test',
+            price: '100',
+            quantity: 100,
+            itemVariants: []
+        }
+    ] */
 
     return (
-        <Box className="flex flex-col min-h-screen">
-            <Box className="fixed top-0 w-full bg-white z-50">
-                <OrderCode orderCode={'2020'} />
-            </Box>
-            <Box className="flex flex-col gap-5 mt-20 mb-28 mx-5">
-                <div>
-                    <h2 className='text-lg'>
-                        Sua cesta
-                    </h2>
-                </div>
+        <section>
+            <div className="mt-5">
+                <h3 className="text-lg font-semibold">
+                    Items Adicionados
+                </h3>
+            </div>
 
-                {/* {cart?.cartItems?.length > 0 && (
-                    <div className='flex flex-col'>
-                        {cart?.cartItems?.map((cartItem, i) => {
-                            <CartItem
-                                key={i}
-                                image={cartItem.image}
-                                title={cartItem.title}
-                                description={cartItem.description}
-                                price={cartItem.price}
-                                id={cartItem.id}
+            <ul>
+                {items && items.map((item) => (
+                    <li key={item.id} className="p-4 mt-5 shadow-md rounded-lg">
+                        <div className="flex items-center">
+                            <img
+                                src="https://via.placeholder.com/50"
+                                alt="Salgados"
+                                className="w-12 h-12 rounded-full"
                             />
-                        })}
-                    </div>
-                )} */}
-            </Box>
-            <Box className="flex flex-row justify-between fixed bottom-0 w-full z-50 mt-10 bg-slate-100">
-                <div className='my-2 ml-3'>
-                    <p className='text-sm font-extralight text-gray-900 mb-1'>Total com a entrega</p>
-                    <span className='font-semibold'>
-                        R$ 52,60
-                    </span>
-                </div>
-                <div className='m-5'>
-                    <Button variant="contained">Continuar</Button>
-                </div>
-            </Box>
-        </Box>
-    )
+                            <div className="ml-4 flex-1">
+                                <h2 className="text-xl font-bold">{item.name}</h2>
+                                <p className="text-lg">{formatPrice(item.price)}</p>
+                                <p className="text-sm">{item.quantity} unidades</p>
+                            </div>
+                            <IconButton aria-label="delete" size="large">
+                                <DeleteIcon fontSize="inherit" className="text-red-600" />
+                            </IconButton>
+                        </div>
+
+                        <ul className="flex flex-col mt-5">
+                            {item.itemVariants.map((el) => (
+                                <li key={el.id} className="font-thin text-sm text-gray-700">{el.name} - {el.quantity} unds.</li>
+                            ))}
+                        </ul>
+                    </li>
+                ))}
+            </ul>
+
+            <div className="flex flex-row justify-center">
+                <button
+                    className="mt-4 bg-blue-500 text-slate-50 py-2 px-4 rounded"
+                    onClick={() => router.push('/ordering/15')}
+                >
+                    Adicionar mais itens
+                </button>
+            </div>
+        </section>
+    );
 }

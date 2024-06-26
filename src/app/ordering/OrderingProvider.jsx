@@ -7,6 +7,7 @@ export default function OrderingProvider({ children }) {
         <CartProvider
             locale={'pt-BR'}
             currency={'BRL'}
+            cartId='cart'
         >
             {children}
         </CartProvider>

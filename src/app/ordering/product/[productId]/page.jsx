@@ -1,8 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import CardMedia from '@mui/material/CardMedia';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '@mrvautin/react-shoppingcart';
+import formatPrice from '@/utils/formatPrice';
 
 const product = {
   name: '100 Salgados',
@@ -29,10 +31,10 @@ export default function Product({ params }) {
   const [selectedFlavors, setSelectedFlavors] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [totalFlavors, setTotalFlavors] = useState(0);
-
-  const productId = params.productId;
-
   const { addItem } = useCart();
+  const router = useRouter();
+
+  const productId = 15;
 
   const handleFlavorChange = (id, value) => {
     const quantity = parseInt(value);
@@ -59,17 +61,25 @@ export default function Product({ params }) {
   };
 
   const handleAddToCart = () => {
-    const flavors = Object.keys(selectedFlavors).map(id => ({
-      id: parseInt(id),
-      quantity: selectedFlavors[id]
-    }));
+    const flavors = Object.keys(selectedFlavors).map(id => {
+      const flavor = product.flavors.find(f => f.id == id);
+      return {
+        id: id,
+        name: flavor.name,
+        quantity: selectedFlavors[id] * quantity
+      };
+    });
 
-    addItem({
+    const item = {
       id: productId,
       name: product.name,
       price: product.price * quantity,
-      flavors: flavors,
-    }, totalFlavors * quantity);
+      itemVariants: flavors,
+    }
+
+    addItem(item, totalFlavors * quantity);
+
+    router.push('/ordering/cart');
   };
 
   return (
@@ -83,7 +93,7 @@ export default function Product({ params }) {
       />
       <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
       <p className="mb-4">{product.description}</p>
-      <p className="mb-8 text-lg font-thin">{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+      <p className="mb-8 text-lg font-thin">{formatPrice(product.price)}</p>
       <h2 className="text-xl font-semibold mb-2">Escolha a quantidade</h2>
       <div>
         {product.flavors && product.flavors.length > 0 ? (
@@ -127,7 +137,7 @@ export default function Product({ params }) {
           disabled={totalFlavors === 0 || totalFlavors < product.max_items}
         >
           Adicionar
-          <span className="ml-2">{(product.price * quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          <span className="ml-2">{formatPrice(product.price * quantity)}</span>
         </button>
       </div>
     </div>
