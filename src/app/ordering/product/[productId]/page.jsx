@@ -8,12 +8,13 @@ import formatPrice from '@/utils/formatPrice';
 
 const product = {
   name: '100 Salgados',
-  image: 'https://via.placeholder.com/140',
+  image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.sabornamesa.com.br%2Fmedia%2Fk2%2Fitems%2Fcache%2F98401d211546397e2b8c04cfd4ec5a4d_XL.jpg&f=1&nofb=1&ipt=563f2c2b20792060f5f57195d8ef063ec1539f275b3d1b0b4058a7783da7dc9d&ipo=images',
   description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
   price: 50,
   max_items: 100,
   flavors: [
-    { id: 1, name: 'Quibe', description: 'amo quibe' },
+    { id: 1, name: 'Quibe', description: '' },
+    { id: 3, name: 'Quibe Recheado', description: 'Recheado com Queijo' },
     { id: 2, name: 'Coxinha', description: '' },
   ]
 }
@@ -31,7 +32,7 @@ export default function Product({ params }) {
   const [selectedFlavors, setSelectedFlavors] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [totalFlavors, setTotalFlavors] = useState(0);
-  const { addItem } = useCart();
+  const { addItem, addShipping } = useCart();
   const router = useRouter();
 
   const productId = 15;
@@ -74,10 +75,17 @@ export default function Product({ params }) {
       id: productId,
       name: product.name,
       price: product.price * quantity,
+      image: product.image,
       itemVariants: flavors,
     }
 
+    const shipping = {
+      description: 'fee',
+      costs: 500,
+  }
+
     addItem(item, totalFlavors * quantity);
+    addShipping(shipping);
 
     router.push('/ordering/cart');
   };
@@ -93,22 +101,26 @@ export default function Product({ params }) {
       />
       <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
       <p className="mb-4">{product.description}</p>
-      <p className="mb-8 text-lg font-thin">{formatPrice(product.price)}</p>
-      <h2 className="text-xl font-semibold mb-2">Escolha a quantidade</h2>
+      <p className="mb-8 text-lg font-extraligth">{formatPrice(product.price)}</p>
+      <h2 className="text-xl font-semibold mb-5">Escolha a quantidade</h2>
       <div>
         {product.flavors && product.flavors.length > 0 ? (
           product.flavors.map((flavor) => (
-            <div key={flavor.id} className="mb-6">
-              <h3 className="text-lg font-medium">{flavor.name}</h3>
-              <p className="mb-2">{flavor.description}</p>
-              <input
-                type="number"
-                min="0"
-                max={product.max_items}
-                value={selectedFlavors[flavor.id] || 0}
-                onChange={(e) => handleFlavorChange(flavor.id, e.target.value)}
-                className="w-16 p-1 border border-gray-300 rounded"
-              />
+            <div key={flavor.id} className="flex flex-row justify-between mb-6">
+              <span>
+                <h3 className="text-lg font-medium">{flavor.name}</h3>
+                <p className="mb-2 font-thin text-xs">{flavor.description}</p>
+              </span>
+              <span>
+                <input
+                  type="number"
+                  min="0"
+                  max={product.max_items}
+                  value={selectedFlavors[flavor.id] || 0}
+                  onChange={(e) => handleFlavorChange(flavor.id, e.target.value)}
+                  className="w-16 p-1 border border-gray-300 rounded"
+                />
+              </span>
             </div>
           ))
         ) : (<></>)}
