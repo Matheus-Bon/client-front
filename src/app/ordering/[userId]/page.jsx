@@ -20,8 +20,8 @@ const getOrderData = async (orderId) => {
 
 export default function Ordering({ params }) {
 
-    const orderId = params.orderId;
-    
+    const orderId = params.userId;
+
     const products = [
         {
             category: 'Salgados',
@@ -72,34 +72,28 @@ export default function Ordering({ params }) {
 
 
     return (
-        <>
-            <div className="fixed top-0 w-full bg-white z-50">
-                <OrderCode
-                    orderCode={'2020'}
-                    orderId={params.orderId}
-                />
-            </div>
-
-            <div className="flex flex-col gap-5 mt-20 mb-28 mx-5">
+        <main>
+            <ul className="flex flex-col gap-5 my-5 mx-5">
                 {products.map((productCategory, index) => (
-                    <div key={index}>
-                        <h3 className="mb-2 font-bold">{productCategory.category}</h3>
-                        <div className="flex flex-col gap-3">
+                    <li key={index}>
+                        <h3 className="mb-2 font-bold text-2xl">{productCategory.category}</h3>
+                        <ul className="flex flex-col gap-3">
                             {productCategory.items.map((product, productIndex) => (
-                                <CardProduct
-                                    key={productIndex}
-                                    image={product.image}
-                                    title={product.title}
-                                    description={product.description}
-                                    price={product.price}
-                                    id={product._id}
-                                    orderCode={'2020'}
-                                />
+                                <li>
+                                    <CardProduct
+                                        key={productIndex}
+                                        image={product.image}
+                                        title={product.title}
+                                        description={product.description}
+                                        price={product.price}
+                                        id={product._id}
+                                    />
+                                </li>
                             ))}
-                        </div>
-                    </div>
+                        </ul>
+                    </li>
                 ))}
-            </div>
-        </>
+            </ul>
+        </main>
     )
 }

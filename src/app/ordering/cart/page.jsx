@@ -1,34 +1,32 @@
 'use client'
 
 import formatPrice from "@/utils/formatPrice";
-import { useCart } from "@mrvautin/react-shoppingcart";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCart } from "@mrvautin/react-shoppingcart";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 export default function Cart() {
-    // const { items } = useCart();
+    const { items: dataItems } = useCart();
     const [items, setItems] = useState([]);
+
     const router = useRouter();
-    const { items: itemsData } = useCart();
 
     useEffect(() => {
-        setItems(itemsData);
-    }, [])
+        setItems(dataItems);
+    }, [dataItems]);
+
+    const { removeItem } = useCart();
 
 
+    const handleRemoveItem = (id, name, price, quantity, itemVariants) => {
+        const product = { id, name, price, quantity, itemVariants };
+        removeItem(product);
+        setItems(prevItems => prevItems.filter(item => item.id !== id));
+    };
 
-    /* const items = [
-        {
-            id: '1',
-            name: 'test',
-            price: '100',
-            quantity: 100,
-            itemVariants: []
-        }
-    ] */
 
     return (
         <section>
@@ -53,7 +51,11 @@ export default function Cart() {
                                 <p className="text-sm">{item.quantity} unidades</p>
                             </div>
                             <IconButton aria-label="delete" size="large">
-                                <DeleteIcon fontSize="inherit" className="text-red-600" />
+                                <DeleteIcon
+                                    fontSize="inherit"
+                                    className="text-red-600"
+                                    onClick={() => handleRemoveItem(item.id, item.name, item.price, item.quantity, item.itemVariants)}
+                                />
                             </IconButton>
                         </div>
 
