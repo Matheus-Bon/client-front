@@ -7,10 +7,12 @@ import { useCart } from "@mrvautin/react-shoppingcart";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import getDataLocalStorage from "@/utils/getDateLocalStorage";
+import { useRouter } from "next/navigation";
 
 
 export default function Cart() {
     const { items: dataItems, cartTotal: cartTotalData, removeItem, removeShipping, addShipping, totalShippingAmount } = useCart();
+    const router = useRouter();
     const [items, setItems] = useState([]);
     const [cartTotal, setCartTotal] = useState([]);
     const [userId, setUserId] = useState('');
@@ -110,11 +112,12 @@ export default function Cart() {
                 </div>
                 <div>
                     <button
-                        className={`flex-1 text-center py-2 px-4 rounded ${!items.length
+                        className={`flex-1 text-center py-2 px-14 rounded ${!items.length
                             ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                             : 'bg-blue-500 text-slate-50'
                             }`}
                         disabled={!items.length}
+                        onClick={() => router.push('/ordering/payment')}
                     >
                         Continuar
                     </button>
