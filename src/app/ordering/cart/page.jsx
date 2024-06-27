@@ -10,7 +10,7 @@ import getDataLocalStorage from "@/utils/getDateLocalStorage";
 
 
 export default function Cart() {
-    const { items: dataItems, cartTotal: cartTotalData } = useCart();
+    const { items: dataItems, cartTotal: cartTotalData, removeItem, removeShipping, addShipping, totalShippingAmount } = useCart();
     const [items, setItems] = useState([]);
     const [cartTotal, setCartTotal] = useState([]);
     const [userId, setUserId] = useState('');
@@ -24,21 +24,31 @@ export default function Cart() {
     }, [dataItems]);
 
     useEffect(() => {
-        const data = getDataLocalStorage('userId')
+        const data = getDataLocalStorage('userId');
         setUserId(data);
     }, []);
 
-    const { removeItem, removeShipping } = useCart();
+    useEffect(() => {
+        if (items.length === 0) {
+            removeShipping();
+        }
+    }, [items, removeShipping]);
 
+    useEffect(() => {
+        const shipping = {
+            description: 'Flat rate shipping',
+            cost: 500,
+        }
+        if (totalShippingAmount === 0) {
+            addShipping(shipping);
+        }
+    }, []);
 
     const handleRemoveItem = (id, name, price, quantity, itemVariants) => {
         const product = { id, name, price, quantity, itemVariants };
         removeItem(product);
-        removeShipping();
         setItems(prevItems => prevItems.filter(item => item.id !== id));
     };
-
-    const total = cartTotal ? (cartTotal / 100) + 5 : 0;
 
     return (
         <main>
@@ -59,7 +69,7 @@ export default function Cart() {
                             />
                             <div className="ml-4 flex-1">
                                 <h2 className="text-xl font-bold">{item.name}</h2>
-                                <p className="text-lg">{formatPrice(item.price)}</p>
+                                <p className="text-lg">{formatPrice(item.itemTotal)}</p>
                                 <p className="text-sm">{item.quantity} unidades</p>
                             </div>
                             <IconButton aria-label="delete" size="large">
@@ -72,7 +82,7 @@ export default function Cart() {
                         </div>
 
                         <ul className="flex flex-col mt-5">
-                            {item.itemVariants.map((el) => (
+                            {item.itemVariants && item.itemVariants.map((el) => (
                                 <li key={el.id} className="font-thin text-sm text-gray-700">{el.name} - {el.quantity} unds.</li>
                             ))}
                         </ul>
@@ -95,7 +105,7 @@ export default function Cart() {
                         <p className="font-thin text-xs">Total com a <strong>taxa de entrega</strong></p>
                     </span>
                     <span>
-                        <p className="font-semibold text-xl">{formatPrice(total)}</p>
+                        <p className="font-semibold text-xl">{formatPrice(cartTotal)}</p>
                     </span>
                 </div>
                 <div>
