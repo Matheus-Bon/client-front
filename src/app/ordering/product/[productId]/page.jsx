@@ -42,19 +42,13 @@ export default function Product({ params }) {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      try {
-        const product = await getProductById(productId);
-        setProduct(product);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
+      const product = await getProductById(productId);
+      setProduct(product);
     };
 
     fetchProduct();
   }, []);
 
-
-  console.log('product ', product)
 
   const handleFlavorChange = (_id, value) => {
     const quantity = parseInt(value);
@@ -90,7 +84,7 @@ export default function Product({ params }) {
       };
     });
 
-    const price = !flavors.length ? product.price : product.price / product.max_items;
+    const price = !flavors.length ? product.price : (product.price / product.max_items);
 
     const item = {
       id: productId,

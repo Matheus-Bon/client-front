@@ -6,23 +6,22 @@ const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
-const handleResponse = async (response) => {
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Something went wrong');
-    }
-    return response.json();
-};
-
-const api = async (url, options = {}) => {
+const api = async (url, options = {}, body) => {
     const config = {
         method: 'GET',
         headers: defaultHeaders,
         ...options,
+        body: JSON.stringify(body)
     };
 
     const response = await fetch(`${API_BASE_URL}${url}`, config);
-    return handleResponse(response);
+    const { error, data } = await response.json();
+
+    if (error) {
+        throw new Error(error);
+    }
+
+    return data;
 };
 
 export default api;

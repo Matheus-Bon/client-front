@@ -4,13 +4,19 @@ import React, { useEffect, useState } from 'react';
 import formatPrice from '@/utils/formatPrice';
 import DialogSelect from '../_components/DialogSelect';
 import { useCart } from '@mrvautin/react-shoppingcart';
+import getDataLocalStorage from '@/utils/getDateLocalStorage';
+import sendOrder from '@/services/ordering/sendOrder';
 
 
 export default function Payment() {
-    const { cartTotal: cartTotalData, totalShippingAmount: totalShippingAmount } = useCart();
+    const { cartTotal: cartTotalData, totalShippingAmount: totalShippingAmount, items } = useCart();
     const [paymentMethod, setPaymentMethod] = useState({ value: 'PIX', label: 'Pix' });
     const [shipping, setShipping] = useState(0);
     const [cartTotal, setCartTotal] = useState(0);
+    const [userId, setUserId] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
 
     useEffect(() => {
         setCartTotal(cartTotalData);
@@ -18,6 +24,11 @@ export default function Payment() {
 
     useEffect(() => {
         setShipping(totalShippingAmount);
+    }, []);
+
+    useEffect(() => {
+        const data = getDataLocalStorage('userId');
+        setUserId(data);
     }, []);
 
     const handlePaymentMethodChange = (newPaymentMethod) => {
@@ -28,10 +39,31 @@ export default function Payment() {
         { value: 'PIX', label: 'Pix' },
         { value: 'DEBIT', label: 'Débito' },
         { value: 'CREDIT', label: 'Crédito' },
-        { value: 'MONEY', label: 'Dinheiro' },
+        { value: 'CASH', label: 'Dinheiro' },
     ];
 
     const subTotal = cartTotal - shipping;
+
+    const madeOrder = async () => {
+        setLoading(true);
+        setError('');
+        const newOrder = {
+            userId,
+            payment: paymentMethod.value,
+            products: items
+        };
+
+        try {
+           const res = await sendOrder(newOrder);
+           alert(res)
+        } catch (error) {
+            console.error('Erro ao enviar pedido:', error);
+            setError('Erro ao enviar pedido. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <div className="mt-40 p-6 bg-white shadow-md rounded-lg mx-6">
@@ -61,9 +93,15 @@ export default function Payment() {
                     <span>{formatPrice(cartTotal)}</span>
                 </div>
             </div>
-            <button className="w-full bg-blue-500 text-white py-2 mt-6 rounded-md font-bold">
-                Finalizar pedido • {formatPrice(cartTotal)}
+
+            <button
+                onClick={madeOrder}
+                className="w-full bg-blue-500 text-white py-2 mt-6 rounded-md font-bold"
+                disabled={loading}
+            >
+                {loading ? 'Fazendo pedido...' : `Finalizar pedido • ${formatPrice(cartTotal)}`}
             </button>
+
         </div>
     );
 }

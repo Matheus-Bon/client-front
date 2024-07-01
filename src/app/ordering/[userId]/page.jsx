@@ -1,9 +1,10 @@
 'use client'
 
 import CardProduct from "../_components/ProductCard";
-import OrderCode from "../_components/OrderCode";
 import { useEffect, useState } from "react";
 import getProducts from "@/services/ordering/getProducts";
+import setDataLocalStorage from "@/utils/setDataLocalStorage";
+import getUserById from "@/services/ordering/getUserById";
 
 // const products = [
 //     {
@@ -40,22 +41,30 @@ import getProducts from "@/services/ordering/getProducts";
 // ];
 
 export default function Ordering({ params }) {
-    const [userId, setUserId] = useState('');
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        const data = localStorage.setItem('userId', params.userId);
-        setUserId(data)
+        const fetchUser = async () => {
+
+            const { error, data } = await getUserById(params.userId);
+            if (error) {
+                throw new Error(error);
+            }
+
+        }
+
+        fetchUser()
+
+    }, []);
+
+    useEffect(() => {
+        setDataLocalStorage('userId', params.userId);
     }, []);
 
     useEffect(() => {
         const fetchProducts = async () => {
-            try {
-                const products = await getProducts();
-                setProducts(products);
-            } catch (error) {
-                console.error('Failed to fetch products:', error);
-            }
+            const products = await getProducts();
+            setProducts(products);
         };
 
         fetchProducts();
