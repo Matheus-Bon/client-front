@@ -6,8 +6,7 @@ import { useEffect, useState } from 'react';
 import { useCart } from '@mrvautin/react-shoppingcart';
 import formatPrice from '@/utils/formatPrice';
 import getProductById from '@/services/ordering/getProductById';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import Loading from '@/components/Loading';
 
 // const product = {
 //   name: '100 Salgados',
@@ -52,17 +51,7 @@ export default function Product({ params }) {
   }, []);
 
   if (!product) {
-    return (<Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        width: '100vw'
-      }}
-    >
-      <CircularProgress />
-    </Box>)
+    return <Loading />
   }
 
 
