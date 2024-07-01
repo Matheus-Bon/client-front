@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { useCart } from '@mrvautin/react-shoppingcart';
 import formatPrice from '@/utils/formatPrice';
 import getProductById from '@/services/ordering/getProductById';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 // const product = {
 //   name: '100 Salgados',
