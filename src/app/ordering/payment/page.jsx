@@ -6,6 +6,7 @@ import DialogSelect from '../_components/DialogSelect';
 import { useCart } from '@mrvautin/react-shoppingcart';
 import getDataLocalStorage from '@/utils/getDateLocalStorage';
 import sendOrder from '@/services/ordering/sendOrder';
+import { useRouter } from 'next/navigation';
 
 
 export default function Payment() {
@@ -16,6 +17,7 @@ export default function Payment() {
     const [userId, setUserId] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -55,7 +57,8 @@ export default function Payment() {
 
         try {
            const res = await sendOrder(newOrder);
-           alert(res)
+           console.log(res)
+           router.push(`/ordering/orderCompletion/${res}`)
         } catch (error) {
             console.error('Erro ao enviar pedido:', error);
             setError('Erro ao enviar pedido. Tente novamente.');
