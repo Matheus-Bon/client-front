@@ -8,14 +8,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import getDataLocalStorage from "@/utils/getDateLocalStorage";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 
 export default function Cart() {
     const { items: dataItems, cartTotal: cartTotalData, removeItem, removeShipping, addShipping, totalShippingAmount } = useCart();
     const router = useRouter();
     const [items, setItems] = useState([]);
-    const [cartTotal, setCartTotal] = useState([]);
+    const [cartTotal, setCartTotal] = useState('');
     const [userId, setUserId] = useState('');
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         setCartTotal(cartTotalData);
@@ -27,8 +30,21 @@ export default function Cart() {
 
     useEffect(() => {
         const data = getDataLocalStorage('userId');
+
+        if (!data) {
+            setError({ statusCode: 404 });
+            return;
+        }
+
         setUserId(data);
     }, []);
+
+    if (error) {
+        const { statusCode, message } = error;
+        const err = new Error(message)
+        err.statusCode = statusCode
+        throw err;
+    }
 
     useEffect(() => {
         if (items.length === 0) {
@@ -51,6 +67,11 @@ export default function Cart() {
         removeItem(product);
         setItems(prevItems => prevItems.filter(item => item.id !== id));
     };
+
+
+    if (!items.length && cartTotal != null) {
+        return (<Loading />);
+    }
 
     return (
         <main>

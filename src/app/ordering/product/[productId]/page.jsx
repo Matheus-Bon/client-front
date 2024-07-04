@@ -8,33 +8,12 @@ import formatPrice from '@/utils/formatPrice';
 import getProductById from '@/services/ordering/getProductById';
 import Loading from '@/components/Loading';
 
-// const product = {
-//   name: '100 Salgados',
-//   image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.sabornamesa.com.br%2Fmedia%2Fk2%2Fitems%2Fcache%2F98401d211546397e2b8c04cfd4ec5a4d_XL.jpg&f=1&nofb=1&ipt=563f2c2b20792060f5f57195d8ef063ec1539f275b3d1b0b4058a7783da7dc9d&ipo=images',
-//   description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
-//   price: 5000,
-//   max_items: 100,
-//   flavors: [
-//     { _id: 1, name: 'Quibe', description: '', additional_price: 0 },
-//     { _id: 3, name: 'Quibe Recheado', description: 'Recheado com Queijo', additional_price: 0.5 },
-//     { _id: 2, name: 'Coxinha', description: '' },
-//   ]
-// }
-
-// const product = {
-//   name: 'Coca Cola',
-//   image: 'https://via.placeholder.com/140',
-//   description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae nisi, ratione inventore architecto sequi aliquam quas ipsa nemo? Laboriosam laborum cupiditate nisi, consequuntur accusamus voluptate sunt eius nemo libero in!",
-//   price: 1200,
-//   max_items: 100,
-//   flavors: []
-// }
-
 export default function Product({ params }) {
   const [selectedFlavors, setSelectedFlavors] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [totalFlavors, setTotalFlavors] = useState(0);
   const [product, setProduct] = useState(0);
+  const [error, setError] = useState(null);
 
   const { addItem } = useCart();
   const router = useRouter();
@@ -49,6 +28,24 @@ export default function Product({ params }) {
 
     fetchProduct();
   }, []);
+
+  useEffect(() => {
+    const data = getDataLocalStorage('userId');
+
+    if (!data) {
+      setError({ statusCode: 404 });
+      return;
+    }
+
+    setUserId(data);
+  }, []);
+
+  if (error) {
+    const { statusCode, message } = error;
+    const err = new Error(message)
+    err.statusCode = statusCode
+    throw err;
+  }
 
   if (!product) {
     return <Loading />

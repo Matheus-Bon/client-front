@@ -16,7 +16,7 @@ export default function Payment() {
     const [cartTotal, setCartTotal] = useState(0);
     const [userId, setUserId] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
     const router = useRouter();
 
 
@@ -30,8 +30,21 @@ export default function Payment() {
 
     useEffect(() => {
         const data = getDataLocalStorage('userId');
+
+        if (!data) {
+            setError({ statusCode: 404 });
+            return;
+        }
+
         setUserId(data);
     }, []);
+
+    if (error) {
+        const { statusCode, message } = error;
+        const err = new Error(message)
+        err.statusCode = statusCode
+        throw err;
+    }
 
     const handlePaymentMethodChange = (newPaymentMethod) => {
         setPaymentMethod(newPaymentMethod);
@@ -56,9 +69,9 @@ export default function Payment() {
         };
 
         try {
-           const res = await sendOrder(newOrder);
-           console.log(res)
-           router.push(`/ordering/orderCompletion/${res}`)
+            const res = await sendOrder(newOrder);
+            console.log(res)
+            router.push(`/ordering/orderCompletion/${res}`)
         } catch (error) {
             console.error('Erro ao enviar pedido:', error);
             setError('Erro ao enviar pedido. Tente novamente.');
