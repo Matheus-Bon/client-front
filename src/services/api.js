@@ -15,7 +15,9 @@ const api = async (url, options = {}, body) => {
     };
 
     const response = await fetch(`${API_BASE_URL}${url}`, config);
-    return  await response.json();
+    const { status, statusCode, data, message } = await response.json();
+
+    return { status, statusCode, data, message };
 };
 
 export default api;

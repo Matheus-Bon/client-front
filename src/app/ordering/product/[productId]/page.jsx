@@ -7,6 +7,7 @@ import { useCart } from '@mrvautin/react-shoppingcart';
 import formatPrice from '@/utils/formatPrice';
 import getProductById from '@/services/ordering/getProductById';
 import Loading from '@/components/Loading';
+import getDataLocalStorage from '@/utils/getDateLocalStorage';
 
 export default function Product({ params }) {
   const [selectedFlavors, setSelectedFlavors] = useState({});
@@ -22,8 +23,18 @@ export default function Product({ params }) {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const product = await getProductById(productId);
-      setProduct(product);
+      const { data } = await getProductById(productId);
+      
+      if (data.flavors.length == 1) {
+        const flavors = data.flavors;
+        
+          const items = Object.keys(flavors[0]);
+          if (!items.length) {
+              data.flavors.pop();
+          }
+      }
+
+      setProduct(data);
     };
 
     fetchProduct();
@@ -36,8 +47,6 @@ export default function Product({ params }) {
       setError({ statusCode: 404 });
       return;
     }
-
-    setUserId(data);
   }, []);
 
   if (error) {

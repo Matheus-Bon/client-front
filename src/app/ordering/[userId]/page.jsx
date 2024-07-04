@@ -27,7 +27,7 @@ export default function Ordering({ params }) {
         };
 
         fetchUser();
-    }, [params.userId]);
+    }, []);
 
     if (error) {
         const { statusCode, message } = error;
