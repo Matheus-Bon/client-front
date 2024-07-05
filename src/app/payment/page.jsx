@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import formatPrice from '@/utils/formatPrice';
-import DialogSelect from '../_components/DialogSelect';
+import DialogSelect from '../../components/DialogSelect';
 import { useCart } from '@mrvautin/react-shoppingcart';
 import getDataLocalStorage from '@/utils/getDateLocalStorage';
 import sendOrder from '@/services/ordering/sendOrder';
@@ -11,7 +11,7 @@ import clearLocalStorage from '@/utils/clearLocalStorage';
 
 
 export default function Payment() {
-    const { cartTotal: cartTotalData, totalShippingAmount: totalShippingAmount, items } = useCart();
+    const { cartTotal: cartTotalData, totalShippingAmount: totalShippingAmount, items, emptyCart } = useCart();
     const [paymentMethod, setPaymentMethod] = useState({ value: 'PIX', label: 'Pix' });
     const [shipping, setShipping] = useState(0);
     const [cartTotal, setCartTotal] = useState(0);
@@ -71,11 +71,12 @@ export default function Payment() {
 
         try {
             const { data } = await sendOrder(newOrder);
-            router.push(`/ordering/orderCompletion/${data}`)
+            router.push(`/orderCompletion/${data}`)
         } catch (error) {
             console.error('Erro ao enviar pedido:', error);
             setError('Erro ao enviar pedido. Tente novamente.');
         } finally {
+            emptyCart();
             clearLocalStorage();
             setLoading(false);
         }

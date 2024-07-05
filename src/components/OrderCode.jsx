@@ -13,19 +13,18 @@ import { usePathname } from 'next/navigation';
 import getDataLocalStorage from '@/utils/getDateLocalStorage';
 
 export default function OrderCode() {
-    const [url, seturl] = React.useState(`/ordering/`);
+    const [url, seturl] = React.useState(`/`);
     const pathname = usePathname();
 
     React.useEffect(() => {
         const data = getDataLocalStorage('userId');
-        console.log('data ', data)
-        seturl(`/ordering/${data}`);
+        seturl(`/${data}`);
     }, []);
 
     let title = 'Área de Pedido';
     let icon = null;
 
-    if (pathname.startsWith('/ordering/')) {
+    if (pathname.startsWith('/')) {
         icon = (
             <Link href={`/ordering/cart`} color="inherit">
                 <ShoppingCartIcon />
@@ -33,8 +32,7 @@ export default function OrderCode() {
         );
     }
 
-    if (pathname.startsWith('/ordering/cart')) {
-        title = "Seu Carrinho";
+    if (pathname.startsWith('/product')) {
         icon = (
             <Link href={url} color="inherit">
                 <ArrowBackIcon />
@@ -42,21 +40,28 @@ export default function OrderCode() {
         );
     }
 
-    if (pathname.startsWith('/ordering/orderCompletion')) {
+    if (pathname.startsWith('/orderCompletion')) {
         title = "Pedido Feito!";
         icon = null;
     }
 
+    if (pathname.startsWith('/cart')) {
+        title = 'Seu Carrinho';
+        icon = (
+            <Link href={url} color="inherit">
+                <ArrowBackIcon />
+            </Link>
+        );
+    }
+
     return (
-        <Box className='mb-10'>
-            <AppBar position='fixed'>
-                <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        {title}
-                    </Typography>
-                    {icon}
-                </Toolbar>
-            </AppBar>
-        </Box>
+        <AppBar position='fixed' className='mb-10'>
+            <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    {title}
+                </Typography>
+                {icon}
+            </Toolbar>
+        </AppBar>
     );
 }

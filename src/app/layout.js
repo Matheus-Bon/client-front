@@ -1,5 +1,7 @@
 import "./globals.css";
-// import { GlobalProvider } from "./ordering/OrderingProvider";
+
+import OrderCode from "@/components/OrderCode";
+import OrderingProvider from "./OrderingProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -10,8 +12,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
 
-      <body className='bg-slate-50'>
-        {children}
+      <body className='bg-slate-50 flex flex-col justify-items-center m-3'>
+        <OrderCode orderCode={''} />
+        <OrderingProvider>
+          {children}
+        </OrderingProvider>
       </body>
 
     </html>

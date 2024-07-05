@@ -116,7 +116,7 @@ export default function Cart() {
             <div className="flex flex-row justify-center">
                 <Link
                     className="mt-4 text-slate-700 py-2 px-4 rounded"
-                    href={`/ordering/${userId}`}
+                    href={`/${userId}`}
                 >
                     Adicionar mais itens
                 </Link>
@@ -138,7 +138,7 @@ export default function Cart() {
                             : 'bg-blue-500 text-slate-50'
                             }`}
                         disabled={!items.length}
-                        onClick={() => router.push('/ordering/payment')}
+                        onClick={() => router.push('/payment')}
                     >
                         Continuar
                     </button>

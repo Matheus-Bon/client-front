@@ -112,7 +112,7 @@ export default function Product({ params }) {
 
     addItem(item, totalQuantity);
 
-    router.push('/ordering/cart');
+    router.push('/cart');
   };
 
   return (

@@ -1,12 +1,13 @@
 'use client'
 
-import CardProduct from "../_components/ProductCard";
 import { useEffect, useState } from "react";
-import getProducts from "@/services/ordering/getProducts";
-import setDataLocalStorage from "@/utils/setDataLocalStorage";
-import getUserById from "@/services/ordering/getUserById";
-import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
+
+import getUserById from "@/services/ordering/getUserById";
+import getProducts from "@/services/ordering/getProducts";
+import Loading from "@/components/Loading";
+import setDataLocalStorage from "@/utils/setDataLocalStorage";
+import ProductCard from "@/components/ProductCard";
 
 
 export default function Ordering({ params }) {
@@ -20,6 +21,7 @@ export default function Ordering({ params }) {
     useEffect(() => {
         const fetchUser = async () => {
             const { status, statusCode, data, message } = await getUserById(params.userId);
+
             if (status === 'error') {
                 setError({ statusCode, message });
                 return;
@@ -40,7 +42,7 @@ export default function Ordering({ params }) {
 
     useEffect(() => {
         if (orderCode) {
-            router.push(`/ordering/orderCompletion/${orderCode}`);
+            router.push(`/orderCompletion/${orderCode}`);
         }
     }, [orderCode, router]);
 
@@ -77,7 +79,7 @@ export default function Ordering({ params }) {
                         <ul className="flex flex-col gap-3">
                             {productCategory.items.map((product) => (
                                 <li key={product._id}>
-                                    <CardProduct
+                                    <ProductCard
                                         image={product.image}
                                         name={product.name}
                                         description={product.description}

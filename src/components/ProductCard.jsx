@@ -9,7 +9,7 @@ export default function ProductCard({ image, name, description, price, id }) {
     return (
         <Link
             className="flex items-center border border-gray-300 rounded-lg p-4 max-w-md"
-            href={`/ordering/product/${id}`}
+            href={`/product/${id}`}
         >
             <div className="w-24 h-24 flex-shrink-0">
                 <img src={image} alt={name} className="w-full h-full object-cover rounded-lg" />

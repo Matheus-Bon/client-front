@@ -1,8 +1,17 @@
 'use client'
 
+import UserNotFound from '@/components/UserNotFound';
 import React from 'react'
 
 export default function Error({ error, reset }) {
+
+    const statusCode = error.statusCode;
+    const message = error.message;
+
+    if (statusCode === 404) {
+        return <UserNotFound message={message} />
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white shadow-md rounded-lg p-8">
