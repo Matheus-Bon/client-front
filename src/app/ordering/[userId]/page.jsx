@@ -6,19 +6,28 @@ import getProducts from "@/services/ordering/getProducts";
 import setDataLocalStorage from "@/utils/setDataLocalStorage";
 import getUserById from "@/services/ordering/getUserById";
 import Loading from "@/components/Loading";
-import UserNotFound from "../_components/UserNotFound";
+import { useRouter } from "next/navigation";
 
 
 export default function Ordering({ params }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [orderCode, setOrderCode] = useState(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUser = async () => {
             const { status, statusCode, data, message } = await getUserById(params.userId);
             if (status === 'error') {
-                setError({ statusCode, message })
+                setError({ statusCode, message });
+                return;
+            }
+
+            const orderCode = data.orderCode;
+            if (orderCode) {
+                setOrderCode(orderCode);
                 return;
             }
 
@@ -27,12 +36,18 @@ export default function Ordering({ params }) {
         };
 
         fetchUser();
-    }, []);
+    }, [params.userId]);
+
+    useEffect(() => {
+        if (orderCode) {
+            router.push(`/ordering/orderCompletion/${orderCode}`);
+        }
+    }, [orderCode, router]);
 
     if (error) {
         const { statusCode, message } = error;
-        const err = new Error(message)
-        err.statusCode = statusCode
+        const err = new Error(message);
+        err.statusCode = statusCode;
         throw err;
     }
 
@@ -76,5 +91,5 @@ export default function Ordering({ params }) {
                 ))}
             </ul>
         </main>
-    )
+    );
 }
