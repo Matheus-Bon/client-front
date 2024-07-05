@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 export default function Ordering({ params }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
-    const [userId, setUserId] = useState(null);
+    const [userId, setUserId] = useState('');
     const [orderCode, setOrderCode] = useState(null);
 
     const router = useRouter();
@@ -36,7 +36,7 @@ export default function Ordering({ params }) {
         };
 
         fetchUser();
-    }, [params.userId]);
+    }, []);
 
     useEffect(() => {
         if (orderCode) {

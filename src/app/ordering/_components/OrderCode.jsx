@@ -18,6 +18,7 @@ export default function OrderCode() {
 
     React.useEffect(() => {
         const data = getDataLocalStorage('userId');
+        console.log('data ', data)
         seturl(`/ordering/${data}`);
     }, []);
 
@@ -39,6 +40,11 @@ export default function OrderCode() {
                 <ArrowBackIcon />
             </Link>
         );
+    }
+
+    if (pathname.startsWith('/ordering/orderCompletion')) {
+        title = "Pedido Feito!";
+        icon = null;
     }
 
     return (

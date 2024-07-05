@@ -7,6 +7,7 @@ import { useCart } from '@mrvautin/react-shoppingcart';
 import getDataLocalStorage from '@/utils/getDateLocalStorage';
 import sendOrder from '@/services/ordering/sendOrder';
 import { useRouter } from 'next/navigation';
+import clearLocalStorage from '@/utils/clearLocalStorage';
 
 
 export default function Payment() {
@@ -69,13 +70,13 @@ export default function Payment() {
         };
 
         try {
-            const res = await sendOrder(newOrder);
-            console.log(res)
-            router.push(`/ordering/orderCompletion/${res}`)
+            const { data } = await sendOrder(newOrder);
+            router.push(`/ordering/orderCompletion/${data}`)
         } catch (error) {
             console.error('Erro ao enviar pedido:', error);
             setError('Erro ao enviar pedido. Tente novamente.');
         } finally {
+            clearLocalStorage();
             setLoading(false);
         }
     };
